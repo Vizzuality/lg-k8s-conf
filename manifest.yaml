@@ -1,0 +1,390 @@
+apiVersion: v1
+data:
+  GMAPS_API_KEY: "${API_GMAPS_API_KEY}"
+  JWT_SECRET: "${API_JWT_SECRET}"
+kind: Secret
+metadata:
+  name: api
+  namespace: default
+type: Opaque
+
+---
+
+apiVersion: v1
+data:
+  DB_DATABASE: "${DB_DATABASE}"
+  DB_HOST: "${DB_HOST}"
+  DB_PASSWORD: "${DB_PASSWORD}"
+  DB_USERNAME: "${DB_USERNAME}"
+  REDIS_HOST: "${REDIS_HOST}"
+kind: Secret
+metadata:
+  name: db
+  namespace: default
+type: Opaque
+
+---
+
+apiVersion: v1
+data:
+  redis-password: "${REDIS_PASSWORD}"
+kind: Secret
+metadata:
+  name: redis-secret
+  namespace: default
+type: Opaque
+
+
+---
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "3"
+  name: api
+  namespace: default
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      name: api
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        name: api
+    spec:
+      automountServiceAccountToken: true
+      containers:
+        - args:
+            - start:prod
+          env:
+            - name: PORT
+              value: "3000"
+            - name: JWT_EXPIRES_IN
+              value: 2h
+            - name: DISTRIBUTED_MAP
+              value: "true"
+            - name: REQUIRE_USER_AUTH
+              value: "true"
+            - name: REQUIRE_USER_ACCOUNT_ACTIVATION
+              value: "true"
+            - name: USE_NEW_METHODOLOGY
+              value: "true"
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  key: DB_HOST
+                  name: db
+                  optional: false
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  key: DB_USERNAME
+                  name: db
+                  optional: false
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: DB_PASSWORD
+                  name: db
+                  optional: false
+            - name: DB_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  key: DB_DATABASE
+                  name: db
+                  optional: false
+            - name: QUEUE_HOST
+              valueFrom:
+                secretKeyRef:
+                  key: REDIS_HOST
+                  name: db
+                  optional: false
+            - name: GEOCODING_CACHE_HOST
+              valueFrom:
+                secretKeyRef:
+                  key: REDIS_HOST
+                  name: db
+                  optional: false
+            - name: DB_CACHE_HOST
+              valueFrom:
+                secretKeyRef:
+                  key: REDIS_HOST
+                  name: db
+                  optional: false
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: JWT_SECRET
+                  name: api
+                  optional: false
+            - name: GMAPS_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: GMAPS_API_KEY
+                  name: api
+                  optional: false
+          image: "${CONTAINER_REGISTRY_URL}/landgriffon/api/main:latest"
+          imagePullPolicy: Always
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /health
+              port: 3000
+              scheme: HTTP
+            initialDelaySeconds: 15
+            periodSeconds: 25
+            successThreshold: 1
+            timeoutSeconds: 25
+          name: api
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /health
+              port: 3000
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 25
+            successThreshold: 1
+            timeoutSeconds: 25
+          resources:
+            limits:
+              cpu: "0.5"
+              memory: 1Gi
+            requests:
+              cpu: "0.5"
+              memory: 1Gi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      enableServiceLinks: true
+      imagePullSecrets:
+        - name: regcred
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: { }
+      shareProcessNamespace: false
+      terminationGracePeriodSeconds: 30
+
+
+
+
+
+
+
+---
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "3"
+  name: client
+  namespace: default
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      name: client
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        name: client
+    spec:
+      automountServiceAccountToken: true
+      containers:
+        - args:
+            - start:prod
+          image: "${CONTAINER_REGISTRY_URL}/landgriffon/client/main:latest"
+          imagePullPolicy: Always
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: 3000
+              scheme: HTTP
+            initialDelaySeconds: 15
+            periodSeconds: 15
+            successThreshold: 1
+            timeoutSeconds: 5
+          name: client
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: 3000
+              scheme: HTTP
+            initialDelaySeconds: 15
+            periodSeconds: 15
+            successThreshold: 1
+            timeoutSeconds: 5
+          resources:
+            limits:
+              cpu: "0.5"
+              memory: 512Mi
+            requests:
+              cpu: 250m
+              memory: 256Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      enableServiceLinks: true
+      imagePullSecrets:
+        - name: regcred
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: { }
+      shareProcessNamespace: false
+      terminationGracePeriodSeconds: 30
+
+
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "3"
+  name: tiler
+  namespace: default
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      name: tiler
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        name: tiler
+    spec:
+      automountServiceAccountToken: true
+      containers:
+        - command:
+            - uvicorn
+            - app.main:app
+            - --host
+            - 0.0.0.0
+            - --port
+            - "4000"
+          env:
+            - name: API_URL
+              value: api.gcp.svc.cluster.local
+            - name: API_PORT
+              value: "3000"
+            - name: S3_BUCKET_NAME
+              value: landgriffon-raw-data
+            - name: ROOT_PATH
+            - name: TITILER_PREFIX
+              value: /tiler/cog
+            - name: TITILER_ROUTER_PREFIX
+              value: /tiler/cog
+            - name: DEFAULT_COG
+              value: biomass.tif
+            - name: REQUIRE_AUTH
+              value: "false"
+          image: "${CONTAINER_REGISTRY_URL}/landgriffon/client/main:latest"
+          imagePullPolicy: Always
+          name: tiler
+          resources:
+            limits:
+              cpu: "0.5"
+              memory: 1Gi
+            requests:
+              cpu: "0.5"
+              memory: 1Gi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      enableServiceLinks: true
+      imagePullSecrets:
+        - name: regcred
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: { }
+      shareProcessNamespace: false
+      terminationGracePeriodSeconds: 30
+
+
+---
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: api
+  namespace: default
+spec:
+  ports:
+    - port: 3000
+      protocol: TCP
+      targetPort: 3000
+  selector:
+    name: api
+  sessionAffinity: None
+  type: NodePort
+
+
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    alb.ingress.kubernetes.io/healthcheck-path: /auth/signin
+  name: client
+  namespace: default
+spec:
+  ports:
+    - port: 3000
+      protocol: TCP
+      targetPort: 3000
+  selector:
+    name: client
+  sessionAffinity: None
+  type: NodePort
+
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: tiler
+  namespace: default
+spec:
+  ports:
+    - port: 4000
+      protocol: TCP
+      targetPort: 4000
+  selector:
+    name: tiler
+  sessionAffinity: None
+  type: NodePort
+
+
