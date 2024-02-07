@@ -1,0 +1,33 @@
+# Copyright 2024 Landgriffon.
+
+apiVersion: app.k8s.io/v1beta1
+kind: Application
+metadata:
+  name: "LandGriffon"
+  labels:
+    app.kubernetes.io/name: "LandGriffon"
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: "LandGriffon"
+  componentKinds:
+    - group: core
+      kind: Service
+    - group: apps
+      kind: Deployment
+  addOwnerRef: true
+  descriptor:
+    type: "LandGriffon"
+    keywords:
+      - "platform"
+    links:
+      - description: About
+        url: "https://landgriffon.com/about"
+    version: "1.0.0"
+    description: "Making Food Supply Chains more Sustainable."
+    maintainers:
+      - name: Vizzuality
+        email: hello@vizzuality.com.
+    owners:
+      - name: Vizzuality
+        email: hello@vizzuality.com.
