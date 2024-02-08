@@ -6,6 +6,16 @@ x-google-marketplace:
   publishedVersionMetadata:
     releaseNote: >-
       A first release.
+
+properties:
+  name:
+    type: string
+    x-google-marketplace:
+      type: NAME
+  namespace:
+    type: string
+    x-google-marketplace:
+      type: NAMESPACE
   images:
     api:
       properties:
@@ -19,16 +29,72 @@ x-google-marketplace:
       properties:
         tilerImage:
           type: FULL
-properties:
-  name:
-    type: string
-    x-google-marketplace:
-      type: NAME
-  namespace:
-    type: string
-    x-google-marketplace:
-      type: NAMESPACE
+    db-username:
+      type: string
+      title: DB User Name
+      description: The username for the database
+      x-google-marketplace:
+        type: STRING
+        string:
+          generatedProperties:
+            base64Encoded: explicitPasswordEncoded
+    db-password:
+      type: string
+      title: DB Password
+      description: The password for the database
+      x-google-marketplace:
+        type: STRING
+        string:
+          generatedProperties:
+            base64Encoded: explicitPasswordEncoded
+    db-database:
+      type: string
+      title: DB Database
+      description: The database name
+    redis-host:
+      type: string
+      title: Redis Host
+      description: The host for the Redis server
+    redis-password:
+      type: string
+      title: Redis Password
+      description: The password for the Redis server
+      x-google-marketplace:
+        type: STRING
+        string:
+          generatedProperties:
+            base64Encoded: explicitPasswordEncoded
+
+    gmaps-api-key:
+      type: string
+      title: Google Maps API Key
+      description: The API key for Google Maps
+      x-google-marketplace:
+        type: MASKED_FIELD
+        maskedField:
+          base64: true
+          includeSymbols: true
+    jwt-secret:
+        type: string
+        title: JWT Secret
+        description: The secret for the JWT
+        x-google-marketplace:
+            type: MASKED_FIELD
+            maskedField:
+            base64: true
+            includeSymbols: true
+
 
 required:
   - name
   - namespace
+  - apiImage
+  - clientImage
+  - tilerImage
+  - db-username
+  - db-password
+  - db-database
+  - redis-host
+  - redis-password
+  - gmaps-api-key
+  - jwt-secret

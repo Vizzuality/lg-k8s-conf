@@ -1,7 +1,7 @@
 apiVersion: v1
 data:
-  GMAPS_API_KEY: "${API_GMAPS_API_KEY}"
-  JWT_SECRET: "${API_JWT_SECRET}"
+  GMAPS_API_KEY: $gmaps-api-key
+  JWT_SECRET: $jwt-secret
 kind: Secret
 metadata:
   name: api
@@ -12,11 +12,11 @@ type: Opaque
 
 apiVersion: v1
 data:
-  DB_DATABASE: "${DB_DATABASE}"
-  DB_HOST: "${DB_HOST}"
-  DB_PASSWORD: "${DB_PASSWORD}"
-  DB_USERNAME: "${DB_USERNAME}"
-  REDIS_HOST: "${REDIS_HOST}"
+  DB_DATABASE: $db-database
+  DB_HOST: $db-host
+  DB_PASSWORD: $db-password
+  DB_USERNAME: $db-username
+  REDIS_HOST: $redis-host
 kind: Secret
 metadata:
   name: db
@@ -27,7 +27,7 @@ type: Opaque
 
 apiVersion: v1
 data:
-  redis-password: "${REDIS_PASSWORD}"
+  redis-password: $redis-password
 kind: Secret
 metadata:
   name: redis-secret

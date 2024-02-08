@@ -3,7 +3,19 @@
 apiVersion: app.k8s.io/v1beta1
 kind: Application
 metadata:
-  name: "LandGriffon"
+  name: "$name"
+  namespace: "$namespace"
+  annotations:
+    marketplace.cloud.google.com/deploy-info: '{"partner_id": "0014M00002M7m0ZQAR", "product_id": "LandGriffon", "partner_name": "Vizzuality"}'
+    app.kubernetes.io/managed-by: "LandGriffon"
+    app.kubernetes.io/instance: "$name"
+    app.kubernetes.io/part-of: "LandGriffon"
+    app.kubernetes.io/component: "LandGriffon"
+    app.kubernetes.io/version: "1.0.0"
+    app.kubernetes.io/description: "Making Food Supply Chains more Sustainable."
+    app.kubernetes.io/created-by: "Vizzuality"
+    app.kubernetes.io/created-by-email: "hello@vizzuality.com."
+
   labels:
     app.kubernetes.io/name: "LandGriffon"
 spec:
