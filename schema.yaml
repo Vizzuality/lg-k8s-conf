@@ -1,0 +1,34 @@
+x-google-marketplace:
+  schemaVersion: v2
+
+  applicationApiVersion: v1beta1
+  publishedVersion: '1.0.0'
+  publishedVersionMetadata:
+    releaseNote: >-
+      A first release.
+  images:
+    api:
+      properties:
+        apiImage:
+          type: FULL
+    client:
+      properties:
+        clientImage:
+          type: FULL
+    tiler:
+      properties:
+        tilerImage:
+          type: FULL
+properties:
+  name:
+    type: string
+    x-google-marketplace:
+      type: NAME
+  namespace:
+    type: string
+    x-google-marketplace:
+      type: NAMESPACE
+
+required:
+  - name
+  - namespace

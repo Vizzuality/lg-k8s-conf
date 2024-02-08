@@ -133,7 +133,7 @@ spec:
                   key: GMAPS_API_KEY
                   name: api
                   optional: false
-          image: "${CONTAINER_REGISTRY_URL}/landgriffon/api/main:latest"
+          image: $apiImage
           imagePullPolicy: Always
           livenessProbe:
             failureThreshold: 3
@@ -212,7 +212,7 @@ spec:
       containers:
         - args:
             - start:prod
-          image: "${CONTAINER_REGISTRY_URL}/landgriffon/client/main:latest"
+          image: $clientImage
           imagePullPolicy: Always
           livenessProbe:
             failureThreshold: 3
@@ -307,7 +307,7 @@ spec:
               value: biomass.tif
             - name: REQUIRE_AUTH
               value: "false"
-          image: "${CONTAINER_REGISTRY_URL}/landgriffon/client/main:latest"
+          image: $tilerImage
           imagePullPolicy: Always
           name: tiler
           resources:
