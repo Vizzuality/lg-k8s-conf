@@ -6,6 +6,23 @@ x-google-marketplace:
   publishedVersionMetadata:
     releaseNote: >-
       A first release.
+  images:
+    client:
+      properties:
+        clientImage:
+          type: FULL
+          default: europe-west1-docker.pkg.dev/landgriffon/landgriffon-marketplace/client:1.0.0
+    api:
+      properties:
+        apiImage:
+          type: FULL
+          default: europe-west1-docker.pkg.dev/landgriffon/landgriffon-marketplace/api:1.0.0
+
+    tiler:
+      properties:
+        tilerImage:
+          type: FULL
+          default: europe-west1-docker.pkg.dev/landgriffon/landgriffon-marketplace/tiler:1.0.0
 
 properties:
   name:
@@ -16,85 +33,85 @@ properties:
     type: string
     x-google-marketplace:
       type: NAMESPACE
-  images:
-    api:
-      properties:
-        apiImage:
-          type: FULL
-    client:
-      properties:
-        clientImage:
-          type: FULL
-    tiler:
-      properties:
-        tilerImage:
-          type: FULL
-    db-username:
+  dbusername:
       type: string
       title: DB User Name
       description: The username for the database
       x-google-marketplace:
-        type: STRING
-        string:
-          generatedProperties:
-            base64Encoded: explicitPasswordEncoded
-    db-password:
+        type: GENERATED_PASSWORD
+        generatedPassword:
+          length: 16
+          includeSymbols: False
+          base64: True
+  dbhost:
+    type: string
+    title: DB Host
+    description: The host for the database
+    x-google-marketplace:
+      type: GENERATED_PASSWORD
+      generatedPassword:
+        includeSymbols: False
+        base64: True
+  dbpassword:
       type: string
       title: DB Password
       description: The password for the database
       x-google-marketplace:
-        type: STRING
-        string:
-          generatedProperties:
-            base64Encoded: explicitPasswordEncoded
-    db-database:
+        type: GENERATED_PASSWORD
+        generatedPassword:
+          base64: True
+  dbdatabase:
       type: string
       title: DB Database
       description: The database name
-    redis-host:
+      x-google-marketplace:
+        type: GENERATED_PASSWORD
+        generatedPassword:
+
+          includeSymbols: False
+          base64: True
+  redishost:
       type: string
       title: Redis Host
       description: The host for the Redis server
-    redis-password:
+      x-google-marketplace:
+        type: GENERATED_PASSWORD
+        generatedPassword:
+          base64: True
+  redispassword:
       type: string
       title: Redis Password
       description: The password for the Redis server
       x-google-marketplace:
-        type: STRING
-        string:
-          generatedProperties:
-            base64Encoded: explicitPasswordEncoded
+        type: GENERATED_PASSWORD
+        generatedPassword:
+          base64: True
 
-    gmaps-api-key:
+  gmapsapikey:
       type: string
       title: Google Maps API Key
       description: The API key for Google Maps
       x-google-marketplace:
-        type: MASKED_FIELD
-        maskedField:
-          base64: true
-          includeSymbols: true
-    jwt-secret:
+        type: GENERATED_PASSWORD
+        generatedPassword:
+          base64: True
+  jwtsecret:
         type: string
         title: JWT Secret
         description: The secret for the JWT
         x-google-marketplace:
-            type: MASKED_FIELD
-            maskedField:
-            base64: true
-            includeSymbols: true
-
+          type: GENERATED_PASSWORD
+          generatedPassword:
+            base64: True
 
 required:
   - name
   - namespace
-  - apiImage
-  - clientImage
-  - tilerImage
-  - db-username
-  - db-password
-  - db-database
-  - redis-host
-  - redis-password
-  - gmaps-api-key
-  - jwt-secret
+  - dbhost
+  - dbusername
+  - dbpassword
+  - dbdatabase
+  - redishost
+  - redispassword
+  - gmapsapikey
+  - jwtsecret
