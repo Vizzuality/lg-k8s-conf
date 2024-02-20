@@ -27,6 +27,10 @@ spec:
       kind: Service
     - group: apps
       kind: Deployment
+    - group: core
+      kind: PersistentVolumeClaim
+    - group: apps
+      kind: StatefulSet
   addOwnerRef: true
   descriptor:
     type: "LandGriffon"
