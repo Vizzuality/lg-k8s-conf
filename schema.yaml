@@ -67,7 +67,6 @@ properties:
       x-google-marketplace:
         type: GENERATED_PASSWORD
         generatedPassword:
-
           includeSymbols: False
           base64: True
   redishost:
