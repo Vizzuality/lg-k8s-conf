@@ -136,27 +136,7 @@ spec:
                   optional: false
           image: europe-west1-docker.pkg.dev/landgriffon/landgriffon-marketplace/api:1.0.0
           imagePullPolicy: Always
-          livenessProbe:
-            failureThreshold: 3
-            httpGet:
-              path: /health
-              port: 3000
-              scheme: HTTP
-            initialDelaySeconds: 15
-            periodSeconds: 25
-            successThreshold: 1
-            timeoutSeconds: 25
           name: api
-          readinessProbe:
-            failureThreshold: 3
-            httpGet:
-              path: /health
-              port: 3000
-              scheme: HTTP
-            initialDelaySeconds: 30
-            periodSeconds: 25
-            successThreshold: 1
-            timeoutSeconds: 25
           resources:
             limits:
               cpu: "0.5"
