@@ -46,8 +46,8 @@ properties:
   dbhost:
     type: string
     title: DB Host
+    default: cG9zdGdyZXM=
     description: The host for the database
-    default: postgres
     x-google-marketplace:
       type: STRING
   dbpassword:
@@ -70,7 +70,7 @@ properties:
   redishost:
     type: string
     title: Redis Host
-    default: redis
+    default: cmVkaXM=
     description: The host for the Redis server
     x-google-marketplace:
       type: STRING

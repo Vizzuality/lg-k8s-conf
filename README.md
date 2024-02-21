@@ -104,7 +104,6 @@ Navigate to the `lg-marketplace-deployer` directory:
 cd lg-marketplace-deployer
 ```
 
-
 #### Build and push the container image
 
 To build the container image, run the following command:
