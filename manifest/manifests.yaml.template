@@ -158,10 +158,6 @@ spec:
 
 
 
-
-
-
-
 ---
 
 
@@ -278,23 +274,6 @@ spec:
 
 ---
 
-
-
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: postgres-pvc
-  namespace: $namespace
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 40Gi
-  storageClassName: "standard-rwo"
-
----
-
 apiVersion: v1
 kind: Service
 metadata:
@@ -371,20 +350,6 @@ spec:
 
 ---
 
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: redis-pvc
-  namespace: $namespace
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 4Gi
-  storageClassName: "standard-rwo"
-
----
 
 apiVersion: v1
 kind: Service
