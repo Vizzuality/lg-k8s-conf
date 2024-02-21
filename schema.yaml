@@ -46,12 +46,10 @@ properties:
   dbhost:
     type: string
     title: DB Host
+    default: cG9zdGdyZXM=
     description: The host for the database
     x-google-marketplace:
-      type: GENERATED_PASSWORD
-      generatedPassword:
-        includeSymbols: False
-        base64: True
+      type: STRING
   dbpassword:
       type: string
       title: DB Password
@@ -72,11 +70,10 @@ properties:
   redishost:
       type: string
       title: Redis Host
+      default: cmVkaXM=
       description: The host for the Redis server
       x-google-marketplace:
-        type: GENERATED_PASSWORD
-        generatedPassword:
-          base64: True
+        type: STRING
   redispassword:
       type: string
       title: Redis Password

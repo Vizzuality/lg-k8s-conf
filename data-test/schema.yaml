@@ -1,0 +1,112 @@
+x-google-marketplace:
+  schemaVersion: v2
+
+  applicationApiVersion: v1beta1
+  publishedVersion: '1.0.0'
+  publishedVersionMetadata:
+    releaseNote: >-
+      A first release.
+  images:
+    client:
+      properties:
+        clientImage:
+          type: FULL
+          default: europe-west1-docker.pkg.dev/landgriffon/landgriffon-marketplace/client:1.0.0
+    api:
+      properties:
+        apiImage:
+          type: FULL
+          default: europe-west1-docker.pkg.dev/landgriffon/landgriffon-marketplace/api:1.0.0
+
+    tiler:
+      properties:
+        tilerImage:
+          type: FULL
+          default: europe-west1-docker.pkg.dev/landgriffon/landgriffon-marketplace/tiler:1.0.0
+
+properties:
+  name:
+    type: string
+    default: landgriffon-marketplace
+    x-google-marketplace:
+      type: NAME
+  namespace:
+    type: string
+    default: landgriffon-marketplace-test-namespace
+    x-google-marketplace:
+      type: NAMESPACE
+  dbusername:
+    type: string
+    title: DB User Name
+    description: The username for the database
+    x-google-marketplace:
+      type: GENERATED_PASSWORD
+      generatedPassword:
+        base64: True
+  dbhost:
+    type: string
+    title: DB Host
+    description: The host for the database
+    default: postgres
+    x-google-marketplace:
+      type: STRING
+  dbpassword:
+    type: string
+    title: DB Password
+    description: The password for the database
+    x-google-marketplace:
+      type: GENERATED_PASSWORD
+      generatedPassword:
+        base64: True
+  dbdatabase:
+    type: string
+    title: DB Database
+    description: The database name
+    x-google-marketplace:
+      type: GENERATED_PASSWORD
+      generatedPassword:
+        includeSymbols: False
+        base64: True
+  redishost:
+    type: string
+    title: Redis Host
+    default: redis
+    description: The host for the Redis server
+    x-google-marketplace:
+      type: STRING
+  redispassword:
+    type: string
+    title: Redis Password
+    description: The password for the Redis server
+    x-google-marketplace:
+      type: GENERATED_PASSWORD
+      generatedPassword:
+        base64: True
+  gmapsapikey:
+    type: string
+    title: Google Maps API Key
+    description: The API key for Google Maps
+    x-google-marketplace:
+      type: GENERATED_PASSWORD
+      generatedPassword:
+        base64: True
+  jwtsecret:
+    type: string
+    title: JWT Secret
+    description: The secret for the JWT
+    x-google-marketplace:
+      type: GENERATED_PASSWORD
+      generatedPassword:
+        base64: True
+
+required:
+  - name
+  - namespace
+  - dbhost
+  - dbusername
+  - dbpassword
+  - dbdatabase
+  - redishost
+  - redispassword
+  - gmapsapikey
+  - jwtsecret
